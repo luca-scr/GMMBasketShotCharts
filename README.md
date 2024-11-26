@@ -70,7 +70,6 @@ ggplot(data) +
                        colors = cols,
                        guide = "colorbar",
                        values = scales::rescale(c(0,0.1,0.2,0.3,0.35,0.4,0.5,1),
-                                                # sort(c(0,0.4,0.6,1, mean(data$Probs))),
                                                 from = c(0,1)),
                        limits = c(0,1)) +
   labs(title = "Shot chart scoring probability")
@@ -127,7 +126,6 @@ ggplot(data) +
                        colors = cols,
                        guide = "colorbar",
                        values = scales::rescale(c(0,0.1,0.2,0.3,0.35,0.4,0.5,1),
-                                                # sort(c(0,0.4,0.6,1, mean(data$Probs))),
                                                 from = c(0,1)),
                        limits = c(0,1)) +
   labs(title = "Shot chart scoring probability")
