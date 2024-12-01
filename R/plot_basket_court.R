@@ -1,4 +1,3 @@
-
 # Basketball helf-court size and coordinates
 basket_court_nba = list(
   width = 50,
@@ -14,6 +13,51 @@ basket_court_nba = list(
   three_point_radius = 23.75,
   three_point_side_radius = 22,
   three_point_side_height = 14)
+
+#' @rdname plot_basket_court
+#' @export
+# Basketball court light and dark themes
+basket_court_theme = list(
+  "light" = list(court = "#ffffff",
+                 lines = "#333333",
+                 linewidth = 1,
+                 text = "#111111",
+                 made = "#E63946",
+                 missed = "#2297E6"),
+  "dark" = list(court = "#111111",
+                lines = "#ffffff",
+                linewidth = 1,
+                text = "#cccccc",
+                made = "#E63946",
+                missed = "#2297E6",
+                hex_border_size = 0,
+                hex_border_color = "#000000") 
+)
+
+#' @rdname plot_basket_court
+#' @export
+# Basketball court offensive areas theme
+basket_offensive_areas_theme = list(
+  name = c("Paint", "Restricted area", 
+           "Midrange left", "Midrange center", "Midrange right", 
+           "Three-point left corner", "Three-point left", "Three-point center", 
+           "Three-point right", "Three-point right corner"),
+  area = c("paint", "restricted", 
+           "midrange_left", "midrange_center", "midrange_right",
+           "three_point_left_corner", "three_point_left", "three_point_center",
+           "three_point_right", "three_point_right_corner"),
+  color = c("#FF9933", # Light Brown
+            "#CC6600", # Medium Brown
+            "#A8DADC", # Light Blue
+            "#457B9D", # Deep Blue
+            "#B0C4DE", # Light Steel Blue
+            "#2A9D8F", # Light Teal Green
+            "#00796B", # Teal Green
+            "#015D64", # Dark Teal Green
+            "#5BA3A3", # Pale Slate
+            "#ACC5BC"  # Grey-Blue
+           )
+)
 
 #' @name plot_basket_court
 #' @aliases plot_basket_court
@@ -205,141 +249,71 @@ plot_basket_court_offensive_areas <- function(theme = "light",
     guides(fill = guide_legend(title = NULL))
 }
 
-#' @rdname plot_basket_court
-#' @export
 
-basket_court_theme = list(
-  "light" = list(court = "#ffffff",
-                 lines = "#333333",
-                 linewidth = 1,
-                 text = "#111111",
-                 made = "#E63946",
-                 missed = "#2297E6"),
-  "dark" = list(court = "#111111",
-                lines = "#ffffff",
-                linewidth = 1,
-                text = "#cccccc",
-                made = "#E63946",
-                missed = "#2297E6",
-                hex_border_size = 0,
-                hex_border_color = "#000000") 
-)
-
-#' @rdname plot_basket_court
-#' @export
-
-basket_offensive_areas_theme = list(
-  name = c("Paint", "Restricted area", 
-           "Midrange left", "Midrange center", "Midrange right", 
-           "Three-point left corner", "Three-point left", "Three-point center", 
-           "Three-point right", "Three-point right corner"),
-  area = c("paint", "restricted", 
-           "midrange_left", "midrange_center", "midrange_right",
-           "three_point_left_corner", "three_point_left", "three_point_center",
-           "three_point_right", "three_point_right_corner"),
-  color = c("#FF9933", # Light Brown
-            "#CC6600", # Medium Brown
-            "#A8DADC", # Light Blue
-            "#457B9D", # Deep Blue
-            "#B0C4DE", # Light Steel Blue
-            "#2A9D8F", # Light Teal Green
-            "#00796B", # Teal Green
-            "#015D64", # Dark Teal Green
-            "#5BA3A3", # Pale Slate
-            "#ACC5BC" # Grey-Blue
-           )
-)
-
-#' @rdname plot_basket_court
-#' @export
-
-point_in_polygon <- function(point, polygon, boundary = TRUE, ...) 
-{
-# Check if a point lies inside a polygon. 
-# The ray-casting algorithm is used, which involves drawing a horizontal ray 
-# from the point in question and counting how many times it intersects the 
-# edges of the polygon. A point is considered strictly inside if the number of
-# intersections is odd. 
-# 
-# Arguments:
-# point: vector of (x,y) coordinates
-# polygon: two-column matrix of (x,y) coordinates for the (closed) polygon
-# boundary: logical, if TRUE allows the point to lie on the boundary
-  
-  point <- as.vector(unlist(point))[1:2]
-  polygon <- as.matrix(polygon[,1:2])
-  n <- nrow(polygon)
-  # Unpack point coordinates
-  x <- point[1]
-  y <- point[2]
-  
-  # Initialize intersection count
-  intersections <- 0
-  
-  # Function to check if a point is on a line segment
-  is_on_segment <- function(px, py, x1, y1, x2, y2) 
-  {
-    # Check for collinearity and that the point lies within the bounds of the segment
-    collinear <- (y2 - y1) * (px - x1) == (py - y1) * (x2 - x1)
-    within_bounds <- px >= min(x1, x2) && px <= max(x1, x2) && py >= min(y1, y2) && py <= max(y1, y2)
-    return(collinear && within_bounds)
-  }
-	 
-  # Loop through each edge of the polygon
-  for (i in 1:n) 
-  {
-    # Get coordinates of the current edge
-    x1 <- polygon[i, 1]
-    y1 <- polygon[i, 2]
-    x2 <- polygon[(i %% n) + 1, 1]
-    y2 <- polygon[(i %% n) + 1, 2]
-
-    # Check if the point lies exactly on the edge
-		if (is_on_segment(x, y, x1, y1, x2, y2)) 
-		{
-			if(boundary) return(TRUE) else return(FALSE) 
-		}
-    
-    # Ray-casting check for intersection
-    if ((y > min(y1, y2)) && (y <= max(y1, y2)) && (x <= max(x1, x2))) 
-    {
-      # Find x-intersection of the edge with the horizontal ray
-      x_intersection <- (y - y1) * (x2 - x1) / (y2 - y1) + x1
-      if (x1 == x2 || x <= x_intersection) 
-      {
-        intersections <- intersections + 1
-      }
-    }
-  }
-  
-  # The point is inside if the number of intersections is odd
-  return(intersections %% 2 == 1)
-}
-
-
-# old
-# point_in_polygon <- function(point, polygon) 
+# R version, now Rcpp version is used
+# point_in_polygon <- function(point, polygon, boundary = TRUE, ...) 
 # {
+# # Check if a point lies inside a polygon. 
+# # The ray-casting algorithm is used, which involves drawing a horizontal ray 
+# # from the point in question and counting how many times it intersects the 
+# # edges of the polygon. A point is considered strictly inside if the number of
+# # intersections is odd. 
+# # 
+# # Arguments:
+# # point: vector of (x,y) coordinates
+# # polygon: two-column matrix of (x,y) coordinates for the (closed) polygon
+# # boundary: logical, if TRUE allows the point to lie on the boundary
+#   
 #   point <- as.vector(unlist(point))[1:2]
 #   polygon <- as.matrix(polygon[,1:2])
 #   n <- nrow(polygon)
-#   inside <- FALSE
-#   # Iterate through each edge of the polygon
-#   for(i in 1:n) 
+#   # Unpack point coordinates
+#   x <- point[1]
+#   y <- point[2]
+#   
+#   # Initialize intersection count
+#   intersections <- 0
+#   
+#   # Function to check if a point is on a line segment
+#   is_on_segment <- function(px, py, x1, y1, x2, y2) 
 #   {
-#     j <- ifelse(i < n, i + 1, 1)
-#     if( ((point[2] < polygon[i,2]) != (point[2] < polygon[j,2])) &&
-#          (point[1] <= (polygon[j,1] - polygon[i,1]) * 
-#                      (point[2] - polygon[i,2]) / 
-#                      (polygon[j,2] - polygon[i,2]) + 
-#                      polygon[i,1]) )
+#     # Check for collinearity and that the point lies within the bounds of the segment
+#     collinear <- (y2 - y1) * (px - x1) == (py - y1) * (x2 - x1)
+#     within_bounds <- px >= min(x1, x2) && px <= max(x1, x2) && py >= min(y1, y2) && py <= max(y1, y2)
+#     return(collinear && within_bounds)
+#   }
+# 	 
+#   # Loop through each edge of the polygon
+#   for (i in 1:n) 
+#   {
+#     # Get coordinates of the current edge
+#     x1 <- polygon[i, 1]
+#     y1 <- polygon[i, 2]
+#     x2 <- polygon[(i %% n) + 1, 1]
+#     y2 <- polygon[(i %% n) + 1, 2]
+# 
+#     # Check if the point lies exactly on the edge
+# 		if (is_on_segment(x, y, x1, y1, x2, y2)) 
+# 		{
+# 			if(boundary) return(TRUE) else return(FALSE) 
+# 		}
+#     
+#     # Ray-casting check for intersection
+#     if ((y > min(y1, y2)) && (y <= max(y1, y2)) && (x <= max(x1, x2))) 
 #     {
-#       inside <- !inside
+#       # Find x-intersection of the edge with the horizontal ray
+#       x_intersection <- (y - y1) * (x2 - x1) / (y2 - y1) + x1
+#       if (x1 == x2 || x <= x_intersection) 
+#       {
+#         intersections <- intersections + 1
+#       }
 #     }
 #   }
 #   
-#   return(inside)
+#   # The point is inside if the number of intersections is odd
+#   return(intersections %% 2 == 1)
 # }
+
 
 #' @rdname plot_basket_court
 #' @export
@@ -524,94 +498,63 @@ basket_court_offensive_areas <- function(use_short_three = FALSE, ...)
 #' @rdname plot_basket_court
 #' @export
 
+# old
+# basket_court_point_area <- function(point, ...)
+# {
+# # Given a (x,y) data point return the corresponding offensive area as defined in
+# # basket_court_offensive_areas() 
+# 
+#   point <- as.vector(unlist(point))
+#   xyoff <- basket_court_offensive_areas(...)
+#   uarea <- unique(xyoff$area)
+#   area <- sapply(uarea, function(a) 
+#                  point_in_polygon(point, xyoff[area == a], ...))
+#   area <- factor(uarea[which(area)[1]], levels = uarea)
+#   return(area)
+# }
+
 basket_court_point_area <- function(point, ...)
 {
-# Given a (x,y) data point return the corresponding offensive area as defined in
-# basket_court_offensive_areas() 
-
+  # Given a (x,y) data point return the corresponding offensive area 
+  # as defined in basket_court_offensive_areas() 
   point <- as.vector(unlist(point))
   xyoff <- basket_court_offensive_areas(...)
+  xy <- as.matrix(xyoff[, c("x", "y")])
   uarea <- unique(xyoff$area)
   area <- sapply(uarea, function(a) 
-                 point_in_polygon(point, xyoff[area == a], ...))
+                 point_in_polygon(point, xy[xyoff$area == a,], ...))
   area <- factor(uarea[which(area)[1]], levels = uarea)
   return(area)
 }
 
+
 #' @rdname plot_basket_court
 #' @export
 
-three_point_shot <- function(point, use_short_three = FALSE, ...)
+# old
+# three_point_shot <- function(point, use_short_three = FALSE, ...)
+# {
+# # Return TRUE if point (x,y) coordinates correspond to a 3-point shot
+#   point <- as.vector(unlist(point))
+#   xyoff <- basket_court_offensive_areas(use_short_three = use_short_three, ...)
+#   uarea <- unique(xyoff$area)
+#   area <- sapply(uarea, function(a) 
+#                  point_in_polygon(point, xyoff[area == a], ...))
+#   area <- uarea[which(area)]
+#   all(grepl("three", area))
+# }
+  
+three_point_shot <- function(point, ...)
 {
-# Return TRUE if point (x,y) coordinates correspond to a 3-point shot
+  # Given a (x,y) data point return TRUE if point (x,y) coordinates 
+  # correspond to a 3-point shot 
   point <- as.vector(unlist(point))
-  xyoff <- basket_court_offensive_areas(use_short_three = use_short_three, ...)
+  xyoff <- basket_court_offensive_areas(...)
+  xy <- as.matrix(xyoff[, c("x", "y")])
   uarea <- unique(xyoff$area)
   area <- sapply(uarea, function(a) 
-                 point_in_polygon(point, xyoff[area == a], ...))
+                 point_in_polygon(point, xy[xyoff$area == a,], ...))
   area <- uarea[which(area)]
   all(grepl("three", area))
 }
   
-# old
-# three_point_shot <- function(point, use_short_three = FALSE, ...)
-# {
-#   point <- as.vector(unlist(point))
-#   court <- basket_court_nba
-#   if(use_short_three) 
-#   {
-#     court$three_point_radius <- 22
-#     court$three_point_side_height <- 0
-#   }
-#   
-#   circle_points <- function(center = c(0, 0), radius = 1, npoints = 360) 
-#   {
-#     angles = seq(0, 2 * pi, length.out = npoints)
-#     return(data.table(x = center[1] + radius * cos(angles),
-#                       y = center[2] + radius * sin(angles)))
-#   }
-# 
-#   three_point_circle <- circle_points(center = c(0, court$hoop_center_y), 
-#                                       radius = court$three_point_radius)
-#   inc <- (three_point_circle$y > court$three_point_side_height & 
-#           three_point_circle$y > court$hoop_center_y)
-#   three_point_circle <- three_point_circle[inc,,drop=FALSE]
-# 
-#   # three_point_line <- data.table(
-#   #   x <- c(court$three_point_side_radius, 
-#   #          court$three_point_side_radius, 
-#   #          three_point_circle[,1], 
-#   #          -court$three_point_side_radius,
-#   #          -court$three_point_side_radius, 
-#   #          court$three_point_side_radius),
-#   #   y <- 47 - c(0, court$three_point_side_height, 
-#   #               three_point_circle[,2], 
-#   #               court$three_point_side_height, 0, 0))
-#   # LS: a ugly patch...
-#   # inside <- c(point_in_polygon(point, three_point_area),
-#   #             point_in_polygon(c(-point[1],point[2]), three_point_line))
-#   # out <- any(!inside)
-# 
-#   three_point_area <- data.table(
-#     x = c(court$width/2,
-#           court$three_point_side_radius, 
-#           court$three_point_side_radius, 
-#           three_point_circle$x, 
-#           -court$three_point_side_radius,
-#           -court$three_point_side_radius,
-#           -court$width/2,
-#           -court$width/2,
-#           court$width/2,
-#           court$width/2),
-#     y = c(court$height - 
-#              c(0, 0, court$three_point_side_height, 
-#                three_point_circle$y,
-#                court$three_point_side_height, 0, 0),
-#            0, 0, court$height)
-#     )
-# 
-#   inside <- c(point_in_polygon(point, three_point_area),
-#               point_in_polygon(point*c(-1,1), three_point_area))
-#   out <- all(inside)
-#   return(out)
-# }

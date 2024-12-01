@@ -18,11 +18,14 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @import mclust mclustAddons ggplot2 data.table knitr rmarkdown
+#' @import mclust mclustAddons ggplot2 data.table
 #' @importFrom utils menu packageVersion
+#' @importFrom stats na.omit predict 
+#' @importFrom Rcpp sourceCpp
 #' 
+#' @useDynLib GMMBasketShotCharts, .registration = TRUE
 NULL
-
+  
 #' Stephen Curry data
 #' 
 #' Shooting data for Stephen Curry, 2022-23 Regular Season.

@@ -1,17 +1,24 @@
 Package: GMMBasketShotCharts
 Version: 0.1
-Date: 2024-11-26
-Title: Gaussian Mixture Model for Model-based Shot Charts Estimation in Basketball
+Date: 2024-12-01
+Title: Gaussian Mixture Models for Model-based Shot Charts Estimation in Basketball
 Description: A model-based approach using Gaussian mixtures for bounded data to estimate and visualize basketball shot charts.
 Authors@R: 
     person("Luca", "Scrucca", role = c("aut", "cre"),
            email = "luca.scrucca@unibo.it",
            comment = c(ORCID = "0000-0003-3826-0484"))
-Depends: R (>= 4.4.1), mclust (>= 6.1.2), mclustAddons (>= 0.9.1), 
-  data.table (>= 1.16), ggplot2 (>= 3.5), ggthemes (>= 5.1.0) 
-Suggests: knitr (>= 1.4), rmarkdown (>= 2.10)
+Depends: 
+    R (>= 4.4.1), 
+    mclust (>= 6.1.2), 
+    mclustAddons (>= 0.9.1), 
+    data.table (>= 1.16), 
+    ggplot2 (>= 3.5), 
+    ggthemes (>= 5.1.0) 
+Imports: 
+    Rcpp  (>= 1.0)
+LinkingTo: 
+    Rcpp
 License: GPL (>= 2)
-VignetteBuilder: knitr
 Repository: CRAN
 ByteCompile: true
 Encoding: UTF-8
