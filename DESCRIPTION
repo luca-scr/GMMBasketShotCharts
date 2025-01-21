@@ -1,6 +1,6 @@
 Package: GMMBasketShotCharts
-Version: 0.1
-Date: 2024-12-01
+Version: 0.2
+Date: 2025-01-21
 Title: Gaussian Mixture Models for Model-based Shot Charts Estimation in Basketball
 Description: A model-based approach using Gaussian mixtures for bounded data to estimate and visualize basketball shot charts.
 Authors@R: 
