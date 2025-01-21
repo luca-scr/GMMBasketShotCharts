@@ -8,12 +8,12 @@
 \description{
 An R package implementing a model-based approach using Gaussian mixtures
 for bounded data to estimate and visualize basketball shot charts
-(Scrucca & Karlis, 2024).
+(Scrucca & Karlis, 2025).
 }
 \references{
-Scrucca L., Karlis D. (2024) A model-based approach to shot charts estimation
-in basketball. Under review.
-arXiv pre-print available at https://arxiv.org/abs/2405.01182
+Scrucca L., Karlis D. (2025) A model-based approach to shot charts estimation
+in basketball. Computational Statistics.
+https://doi.org/10.1007/s00180-025-01599-1
 }
 \seealso{
 \code{\link[=densityMclustBounded]{densityMclustBounded()}} for density estimation of bounded data.
